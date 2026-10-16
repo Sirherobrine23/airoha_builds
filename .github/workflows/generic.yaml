@@ -109,7 +109,9 @@ jobs:
           detached: true
 
       - name: Copy config
-        run: cp -fv "config_build/${{ inputs.config_file }}.config" .config
+        run: |
+          cp -fv "config_build/${{ inputs.config_file }}.config" .config
+          [[ -e "config_build/feeds.conf" ]] && cp -fv "config_build/feeds.conf" ./feeds.conf
 
       - name: Copy files folder
         if: ${{ inputs.files_folder != '' }}
