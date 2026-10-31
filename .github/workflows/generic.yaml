@@ -38,6 +38,10 @@ on:
         type: boolean
         required: false
         default: false
+      release:
+        type: boolean
+        required: false
+        default: false
 
 jobs:
   build_openwrt:
@@ -247,3 +251,29 @@ jobs:
           retention-days: 3
           archive: false
           path: artifacts_${{ inputs.config_file }}.tar.xz
+
+      - name: Create release
+        uses: Sirherobrine23/action-release@master
+        if: ${{ inputs.release == true }}
+        with:
+          name: ${{ inputs.config_file }} - ${{ github.run_id }}
+          tag_name: v${{ github.run_id }}_${{ inputs.config_file }}
+          body_path: release_body.md
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            build.tar.*
+            bin/targets/**/*
+
+      - name: Sirherobrine23 Create release
+        uses: Sirherobrine23/action-release@master
+        if: ${{ inputs.release == true }}
+        with:
+          name: ${{ inputs.config_file }} - ${{ github.run_id }}
+          tag_name: v${{ github.run_id }}_${{ inputs.config_file }}
+          body_path: release_body.md
+          server_url: https://sirherobrine23.com.br
+          repository: airoha/builds
+          token: ${{ secrets.GITEA_TOKEN }}
+          files: |
+            build.tar.*
+            bin/targets/**/*

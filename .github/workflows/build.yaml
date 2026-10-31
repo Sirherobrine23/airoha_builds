@@ -47,6 +47,7 @@ jobs:
           - en7528
           - en7580
           - en7523
+          - an7581
     with:
       verbose: ${{ github.event_name == 'workflow_dispatch' && inputs.verbose || 's' }}
       make_jobs: ${{ github.event_name == 'workflow_dispatch' && inputs.make_jobs || '$(($(nproc)+1))' }}
@@ -54,50 +55,4 @@ jobs:
       # Static config
       openwrt_repository: Sirherobrine23/openwrt
       openwrt_repository_ref: airoha
-
-  release:
-    name: Release to ${{ matrix.target }}
-    needs: build_openwrt
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        target:
-          - en751221
-          - en7528
-          - en7580
-          - en7523
-    steps:
-      - name: Download actifacts
-        uses: actions/download-artifact@v8
-        with:
-          name: artifacts_${{ matrix.target }}.tar.xz
-
-      - name: Uncompress build artifacts
-        run: |
-          xz -d artifacts_${{ matrix.target }}.tar.xz
-          tar -xvf artifacts_${{ matrix.target }}.tar
-
-      - name: Create release
-        uses: Sirherobrine23/action-release@master
-        with:
-          name: ${{ matrix.target }} - ${{ github.run_id }}
-          tag_name: v${{ github.run_id }}_${{ matrix.target }}
-          body_path: release_body.md
-          token: ${{ secrets.GITHUB_TOKEN }}
-          files: |
-            build.tar.*
-            bin/targets/**/*
-
-      - name: Sirherobrine23 Create release
-        uses: Sirherobrine23/action-release@master
-        with:
-          name: ${{ matrix.target }} - ${{ github.run_id }}
-          tag_name: v${{ github.run_id }}_${{ matrix.target }}
-          body_path: release_body.md
-          server_url: https://sirherobrine23.com.br
-          repository: airoha/builds
-          token: ${{ secrets.GITEA_TOKEN }}
-          files: |
-            build.tar.*
-            bin/targets/**/*
+      release: true
