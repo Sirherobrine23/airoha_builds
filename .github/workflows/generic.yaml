@@ -2,6 +2,9 @@ run-name: Build for config file ${{ inputs.config_file }}.config - ${{ github.ru
 name: Openwrt build
 on:
   workflow_call:
+    secrets:
+      GITEA_TOKEN:
+        required: true
     inputs:
       config_file:
         type: string

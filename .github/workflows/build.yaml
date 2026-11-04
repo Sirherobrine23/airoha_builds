@@ -48,6 +48,7 @@ jobs:
           - en7580
           - en7523
           - an7581
+    secrets: inherit
     with:
       verbose: ${{ github.event_name == 'workflow_dispatch' && inputs.verbose || 's' }}
       make_jobs: ${{ github.event_name == 'workflow_dispatch' && inputs.make_jobs || '$(($(nproc)+1))' }}
